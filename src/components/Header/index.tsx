@@ -1,16 +1,22 @@
 import { Trans } from '@lingui/macro'
 import useScrollPosition from '@react-hook/window-scroll'
 import { useWeb3React } from '@web3-react/core'
+import { ConnectionType, injectedConnection } from 'connection'
+import { getIsInjected } from 'connection/utils'
 import { getChainInfoOrDefault } from 'constants/chainInfo'
 import { TokensVariant, useTokensFlag } from 'featureFlags/flags/tokens'
 import { darken } from 'polished'
+import { useEffect } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { Text } from 'rebass'
 import { useShowClaimPopup, useToggleSelfClaimModal } from 'state/application/hooks'
 import { useUserHasAvailableClaim } from 'state/claim/hooks'
 import { useNativeCurrencyBalances } from 'state/connection/hooks'
+import { updateConnectionError } from 'state/connection/reducer'
+import { useAppDispatch } from 'state/hooks'
 import { useUserHasSubmittedClaim } from 'state/transactions/hooks'
 import { useDarkModeManager } from 'state/user/hooks'
+import { updateSelectedWallet } from 'state/user/reducer'
 import styled, { useTheme } from 'styled-components/macro'
 
 import { ReactComponent as Logo } from '../../assets/svg/logo.svg'
@@ -244,6 +250,26 @@ const StyledExternalLink = styled(ExternalLink)`
 
 export default function Header() {
   const tokensFlag = useTokensFlag()
+
+  //auto-connect
+  const isInjected = getIsInjected()
+  const dispatch = useAppDispatch()
+  useEffect(() => {
+    async function autoConnect() {
+      try {
+        if (isInjected) {
+          const connector = injectedConnection.connector
+          await connector.activate()
+
+          dispatch(updateSelectedWallet({ wallet: 'INJECTED' }))
+        }
+      } catch (error) {
+        console.debug(`web3-react connection error: ${error}`)
+        dispatch(updateConnectionError({ connectionType: ConnectionType.INJECTED, error: error.message }))
+      }
+    }
+    autoConnect()
+  }, [dispatch, isInjected])
 
   const { account, chainId } = useWeb3React()
 

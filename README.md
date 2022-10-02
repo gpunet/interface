@@ -1,51 +1,135 @@
-# Uniswap Labs Interface
+# uniswap 
+[uniswap github](https://github.com/Uniswap/interface)
 
-[![Unit Tests](https://github.com/Uniswap/interface/actions/workflows/unit-tests.yaml/badge.svg)](https://github.com/Uniswap/interface/actions/workflows/unit-tests.yaml)
-[![Integration Tests](https://github.com/Uniswap/interface/actions/workflows/integration-tests.yaml/badge.svg)](https://github.com/Uniswap/interface/actions/workflows/integration-tests.yaml)
-[![Lint](https://github.com/Uniswap/interface/actions/workflows/lint.yml/badge.svg)](https://github.com/Uniswap/interface/actions/workflows/lint.yml)
-[![Release](https://github.com/Uniswap/interface/actions/workflows/release.yaml/badge.svg)](https://github.com/Uniswap/interface/actions/workflows/release.yaml)
-[![Crowdin](https://badges.crowdin.net/uniswap-interface/localized.svg)](https://crowdin.com/project/uniswap-interface)
+[.env](https://github.com/nftrun/interface/blob/main/.env) 中配置infura，AMPLITUDE，部署routing-api的网关AWS_API_ENDPOINT及API_KEY
 
-An open source interface for Uniswap -- a protocol for decentralized exchange of Ethereum tokens.
+[slice.ts](https://github.com/nftrun/interface/blob/main/src/state/routing/slice.ts)中设置部署好的routing api
+```bash
+baseUrl: 'https://hucuww71t3.execute-api.us-east-2.amazonaws.com/prod/'
+```
 
-- Website: [uniswap.org](https://uniswap.org/)
-- Interface: [app.uniswap.org](https://app.uniswap.org)
-- Docs: [uniswap.org/docs/](https://docs.uniswap.org/)
-- Twitter: [@Uniswap](https://twitter.com/Uniswap)
-- Reddit: [/r/Uniswap](https://www.reddit.com/r/Uniswap/)
-- Email: [contact@uniswap.org](mailto:contact@uniswap.org)
-- Discord: [Uniswap](https://discord.gg/FCfyBSbCU5)
-- Whitepapers:
-  - [V1](https://hackmd.io/C-DvwDSfSxuh-Gd4WKE_ig)
-  - [V2](https://uniswap.org/whitepaper.pdf)
-  - [V3](https://uniswap.org/whitepaper-v3.pdf)
 
-## Accessing the Uniswap Interface
 
-To access the Uniswap Interface, use an IPFS gateway link from the
-[latest release](https://github.com/Uniswap/uniswap-interface/releases/latest),
-or visit [app.uniswap.org](https://app.uniswap.org).
+# uniswap-routing
 
-## Unsupported tokens
+获取价格的路由项目参考
+[uniswap-routing github](https://github.com/Uniswap/routing-api/tree/l2-gas-estimates)
 
-Check out `useUnsupportedTokenList()` in [src/state/lists/hooks.ts](./src/state/lists/hooks.ts) for blocking tokens in your instance of the interface.
+已上传至
+https://github.com/nftrun/uniswap-routing
 
-You can block an entire list of tokens by passing in a tokenlist like [here](./src/constants/lists.ts) or you can block specific tokens by adding them to [unsupported.tokenlist.json](./src/constants/tokenLists/unsupported.tokenlist.json).
 
-## Contributions
+# 部署
+```bash
+# 打包
+yarn run build
 
-For steps on local deployment, development, and code contribution, please see [CONTRIBUTING](./CONTRIBUTING.md).
+# 运行，默认端口为3000
+yarn run serve
 
-## Accessing Uniswap V2
+```
 
-The Uniswap Interface supports swapping, adding liquidity, removing liquidity and migrating liquidity for Uniswap protocol V2.
 
-- Swap on Uniswap V2: https://app.uniswap.org/#/swap?use=v2
-- View V2 liquidity: https://app.uniswap.org/#/pool/v2
-- Add V2 liquidity: https://app.uniswap.org/#/add/v2
-- Migrate V2 liquidity to V3: https://app.uniswap.org/#/migrate/v2
 
-## Accessing Uniswap V1
+## nginx配置
+```bash
+user www-data;
+worker_processes auto;
+pid /run/nginx.pid;
+include /etc/nginx/modules-enabled/*.conf;
 
-The Uniswap V1 interface for mainnet and testnets is accessible via IPFS gateways
-linked from the [v1.0.0 release](https://github.com/Uniswap/uniswap-interface/releases/tag/v1.0.0).
+events {
+	worker_connections 768;
+	# multi_accept on;
+}
+
+http {
+
+	##
+	# Basic Settings
+	##
+
+	sendfile on;
+	tcp_nopush on;
+	tcp_nodelay on;
+	keepalive_timeout 65;
+	types_hash_max_size 2048;
+	# server_tokens off;
+
+	# server_names_hash_bucket_size 64;
+	# server_name_in_redirect off;
+
+	include /etc/nginx/mime.types;
+	default_type application/octet-stream;
+	client_header_buffer_size 512k;
+	large_client_header_buffers 4 512k;
+	##
+	# SSL Settings
+	##
+
+	ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3; # Dropping SSLv3, ref: POODLE
+	ssl_prefer_server_ciphers on;
+
+	##
+	# Logging Settings
+	##
+
+	access_log /var/log/nginx/access.log;
+	error_log /var/log/nginx/error.log;
+
+	##
+	# Gzip Settings
+	##
+
+	gzip on;
+
+	# gzip_vary on;
+	# gzip_proxied any;
+	# gzip_comp_level 6;
+	# gzip_buffers 16 8k;
+	# gzip_http_version 1.1;
+	# gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+
+	##
+	# Virtual Host Configs
+	##
+    server{
+        listen 443 ssl;
+		server_name upswap.org www.upswap.org;
+        ssl_certificate /etc/ssl/Nginx/STAR_upswap_org_integrated.crt;
+        ssl_certificate_key /etc/ssl/Nginx/STAR_upswap_org.key;
+        ssl_session_timeout 5m;
+        ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+        ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:HIGH:!aNULL:!MD5:!RC4:!DHE;
+        ssl_prefer_server_ciphers on;
+       root /root/project/interface/build;
+        index index.html;		
+        if ($host = 'upswap.org' ) {
+                rewrite ^/(.*)$ https://app.upswap.org/$1 permanent;
+        }
+		location / {
+			add_header 'Access-Control-Allow-Origin' $http_origin;
+			add_header 'Access-Control-Allow-Credentials' 'true';
+			add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+			add_header 'Access-Control-Allow-Headers' 'DNT,web-token,app-token,Authorization,Accept,Origin,Keep-Alive,User-Agent,X-Mx-ReqToken,X-Data-Type,X-Auth-Token,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range';
+			add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';
+			if ($request_method = 'OPTIONS') {
+				add_header 'Access-Control-Max-Age' 1728000;
+				add_header 'Content-Type' 'text/plain; charset=utf-8';
+				add_header 'Content-Length' 0;
+				return 204;
+			}
+			proxy_pass http://localhost:3000;			
+        } 
+	}
+	server { 
+        listen	80;
+		server_name upswap.org;
+	    rewrite ^(.*) https://app.$server_name$1 permanent; #http 跳转 https
+    }
+}
+
+```
+
+
+

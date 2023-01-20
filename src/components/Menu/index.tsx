@@ -291,7 +291,7 @@ export default function Menu() {
                     {showUNIClaimOption && (
                       <UNIbutton padding="8px 16px" width="100%" $borderRadius="12px" mt="0.5rem">
                         <ButtonExternalLink color="white" href="https://game.runbit.org/">
-                          <Trans>Earn</Trans> {'  '}RB
+                          <Trans>Earn</Trans> {'  '}RT
                         </ButtonExternalLink>
                       </UNIbutton>
                     )}

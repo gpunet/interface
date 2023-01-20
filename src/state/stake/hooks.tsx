@@ -1,7 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
-import { RB_POLYGON, RB_POLYGON_MUMBAI } from 'constants/tokens'
+import { RB_POLYGON_MUMBAI, RT_POLYGON } from 'constants/tokens'
 import { useStakingContract } from 'hooks/useContract'
 import { CallStateResult, useSingleCallResult, useSingleContractMultipleData } from 'lib/hooks/multicall'
 import { useMemo } from 'react'
@@ -13,7 +13,7 @@ export const STAKING_REWARDS_INFO: {
   [chainId: number]: { stakingAddress: string; rewardToken: Token }
 } = {
   80001: { stakingAddress: '0xaD1A6452401CD4C4C3439631918C0807BCD36899', rewardToken: RB_POLYGON_MUMBAI },
-  137: { stakingAddress: '0x9fA416bf7BAC3D3A3B8c416B7D239e77bcd8fc1b', rewardToken: RB_POLYGON },
+  137: { stakingAddress: '0x97d9CCcf6992f1C22E044D4c4E7bd1D17cA5e470', rewardToken: RT_POLYGON },
 }
 export interface StakingInfo {
   index: number

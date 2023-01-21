@@ -380,7 +380,7 @@ export const RB_POLYGON_MUMBAI = new Token(
 )
 export const RT_POLYGON = new Token(
   SupportedChainId.POLYGON,
-  '0x00000000008783C915c33B0D7cA46139fB3cF690',
+  '0x68101D671bb84895dA7dD7173BD71751929A7D0e',
   18,
   'RT',
   'Runbit Token'

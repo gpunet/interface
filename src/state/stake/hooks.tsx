@@ -170,9 +170,9 @@ export function useStakingInfo(): StakingResults {
     }
     return undefined
   }, [loading, error, stakingAdress, results])
-  const resultInfos = incentiveInfos?.filter(
-    (incentive) => incentive.startTime?.toNumber() <= new Date().getTime() / 1000
-  )
+  const resultInfos = incentiveInfos?.filter((incentive) => {
+    return incentive.startTime?.toNumber() <= new Date().getTime() / 1000 && !!incentive.numberOfStakes?.toNumber()
+  })
   return { loading: loading || stakeloading, stakingInfo: resultInfos ?? undefined }
 }
 

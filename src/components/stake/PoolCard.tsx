@@ -23,9 +23,8 @@ const StatContainer = styled.div`
   flex-direction: column;
   gap: 12px;
   margin: 1rem;
-  // ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToSmall`
-  // display: none;
-`};
+  /* ${({ theme }) => theme.deprecated_mediaWidth.deprecated_upToSmall}
+  display: none; */
 `
 
 const Wrapper = styled(AutoColumn)<{ showBackground: boolean; bgColor: any }>`
